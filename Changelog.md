@@ -1,5 +1,10 @@
 # Next
 
+# [13.0.2] - 2019-08-05
+
+### Added
+- Add metrics support
+
 # [13.0.1] - 2019-05-01
 
 ### Fixed
