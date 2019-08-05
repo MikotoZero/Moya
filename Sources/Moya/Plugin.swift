@@ -17,6 +17,12 @@ public protocol PluginType {
     /// Called after a response has been received, but before the MoyaProvider has invoked its completion handler.
     func didReceive(_ result: Result<Moya.Response, MoyaError>, target: TargetType)
 
+    /// Called after metrics have been collected
+    #if !os(watchOS)
+    @available(iOS 10.0, macOS 10.12, tvOS 10.0, *)
+    func didReceive(_ result: Result<Moya.Response, MoyaError>, with metrics: URLSessionTaskTransactionMetrics?, target: TargetType)
+    #endif
+
     /// Called to modify a result before completion.
     func process(_ result: Result<Moya.Response, MoyaError>, target: TargetType) -> Result<Moya.Response, MoyaError>
 }
@@ -25,6 +31,10 @@ public extension PluginType {
     func prepare(_ request: URLRequest, target: TargetType) -> URLRequest { return request }
     func willSend(_ request: RequestType, target: TargetType) { }
     func didReceive(_ result: Result<Moya.Response, MoyaError>, target: TargetType) { }
+    #if !os(watchOS)
+    @available(iOS 10.0, macOS 10.12, tvOS 10.0, *)
+    func didReceive(_ result: Result<Moya.Response, MoyaError>, with metrics: URLSessionTaskTransactionMetrics?, target: TargetType) { }
+    #endif
     func process(_ result: Result<Moya.Response, MoyaError>, target: TargetType) -> Result<Moya.Response, MoyaError> { return result }
 }
 

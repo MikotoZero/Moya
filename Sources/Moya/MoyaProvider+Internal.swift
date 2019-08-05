@@ -245,10 +245,18 @@ private extension MoyaProvider {
             }
         }
 
-        let completionHandler: RequestableCompletion = { response, request, data, error in
+        let completionHandler: RequestableCompletion = { response, request, data, error, metrics in
             let result = convertResponseToResult(response, request: request, data: data, error: error)
             // Inform all plugins about the response
             plugins.forEach { $0.didReceive(result, target: target) }
+
+            #if !os(watchOS)
+            if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *),
+                let metrics = metrics as? URLSessionTaskTransactionMetrics {
+                plugins.forEach { $0.didReceive(result, with: metrics, target: target) }
+            }
+            #endif
+
             if let progressCompletion = progressCompletion {
                 switch progressAlamoRequest {
                 case let downloadRequest as DownloadRequest:

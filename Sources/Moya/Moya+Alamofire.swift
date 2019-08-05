@@ -67,7 +67,7 @@ public final class CancellableToken: Cancellable, CustomDebugStringConvertible {
 
 }
 
-internal typealias RequestableCompletion = (HTTPURLResponse?, URLRequest?, Data?, Swift.Error?) -> Void
+internal typealias RequestableCompletion = (HTTPURLResponse?, URLRequest?, Data?, Swift.Error?, Any?) -> Void
 
 internal protocol Requestable {
     func response(callbackQueue: DispatchQueue?, completionHandler: @escaping RequestableCompletion) -> Self
@@ -76,7 +76,15 @@ internal protocol Requestable {
 extension DataRequest: Requestable {
     internal func response(callbackQueue: DispatchQueue?, completionHandler: @escaping RequestableCompletion) -> Self {
         return response(queue: callbackQueue) { handler  in
-            completionHandler(handler.response, handler.request, handler.data, handler.error)
+            #if !os(watchOS)
+            if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
+                completionHandler(handler.response, handler.request, handler.data, handler.error, handler.metrics)
+            } else {
+                completionHandler(handler.response, handler.request, handler.data, handler.error, nil)
+            }
+            #else
+            completionHandler(handler.response, handler.request, handler.data, handler.error, nil)
+            #endif
         }
     }
 }
@@ -84,7 +92,15 @@ extension DataRequest: Requestable {
 extension DownloadRequest: Requestable {
     internal func response(callbackQueue: DispatchQueue?, completionHandler: @escaping RequestableCompletion) -> Self {
         return response(queue: callbackQueue) { handler  in
-            completionHandler(handler.response, handler.request, nil, handler.error)
+            #if !os(watchOS)
+            if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *) {
+                completionHandler(handler.response, handler.request, nil, handler.error, handler.metrics)
+            } else {
+                completionHandler(handler.response, handler.request, nil, handler.error, nil)
+            }
+            #else
+            completionHandler(handler.response, handler.request, nil, handler.error, nil)
+            #endif
         }
     }
 }
