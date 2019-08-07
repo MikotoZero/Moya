@@ -20,7 +20,7 @@ public protocol PluginType {
     /// Called after metrics have been collected
     #if !os(watchOS)
     @available(iOS 10.0, macOS 10.12, tvOS 10.0, *)
-    func didReceive(_ result: Result<Moya.Response, MoyaError>, with metrics: URLSessionTaskTransactionMetrics?, target: TargetType)
+    func didReceive(_ result: Result<Moya.Response, MoyaError>, with metrics: URLSessionTaskTransactionMetrics?, task: URLSessionTask?, target: TargetType)
     #endif
 
     /// Called to modify a result before completion.
@@ -33,7 +33,7 @@ public extension PluginType {
     func didReceive(_ result: Result<Moya.Response, MoyaError>, target: TargetType) { }
     #if !os(watchOS)
     @available(iOS 10.0, macOS 10.12, tvOS 10.0, *)
-    func didReceive(_ result: Result<Moya.Response, MoyaError>, with metrics: URLSessionTaskTransactionMetrics?, target: TargetType) { }
+    func didReceive(_ result: Result<Moya.Response, MoyaError>, with metrics: URLSessionTaskTransactionMetrics?, task: URLSessionTask?, target: TargetType) { }
     #endif
     func process(_ result: Result<Moya.Response, MoyaError>, target: TargetType) -> Result<Moya.Response, MoyaError> { return result }
 }

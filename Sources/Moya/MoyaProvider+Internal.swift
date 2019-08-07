@@ -253,7 +253,7 @@ private extension MoyaProvider {
             #if !os(watchOS)
             if #available(iOS 10.0, macOS 10.12, tvOS 10.0, *),
                 let metrics = metrics as? URLSessionTaskTransactionMetrics {
-                plugins.forEach { $0.didReceive(result, with: metrics, target: target) }
+                plugins.forEach { $0.didReceive(result, with: metrics, task: progressAlamoRequest.task, target: target) }
             }
             #endif
 
